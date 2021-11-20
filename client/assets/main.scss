@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'Gandom';
+    src: url('./font/Gandom.ttf');
+}
+
+.page-enter-active,
+.page-leave-active,
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.5s;
+}
+
+.page-enter,
+.page-leave-to,
+.layout-enter,
+.layout-leave-active {
+  opacity: 0;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body{
+  -ms-overflow-style: none; 
+   scrollbar-width: none
+
+   }
