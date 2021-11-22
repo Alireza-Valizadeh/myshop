@@ -10,32 +10,16 @@ const { query, validationResult, body } = require("express-validator");
 const { CreateToken, CheckToken } = require("../utils/jwt");
 const router = express.Router();
 
-router.get("/states", (req, res) => {
-  sql.query("SELECT * FROM [State]", (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send(sqlError(err));
-    }
-    res.status(200).send(result.recordset);
-  });
-});
-
-router.get("/genders", (req, res) => {
-  sql.query("SELECT * FROM [Gender]", (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send(sqlError(err));
-    }
-    res.status(200).send(result.recordset);
-  });
-});
-
 router.post(
   "/register",
-  body("name").notEmpty().withMessage("نام کاربری خود را وارد کنید"),
+  body("name").notEmpty().withMessage("نام  خود را وارد کنید"),
   body("name")
-    .isLength({ min: 3, max: 70 })
-    .withMessage("نام کاربری باید بیشتر از 6 حرف باشد"),
+    .isLength({ min: 6, max: 70 })
+    .withMessage("نام  باید بیشتر از 6 حرف باشد"),
+  body("family").notEmpty().withMessage("نام خانوادگی خود را وارد کنید"),
+  body("family")
+    .isLength({ min: 6, max: 70 })
+    .withMessage("نام خانوادگی باید بیشتر از 6 حرف باشد"),
   body("email").notEmpty().withMessage("ایمیل  خود را وارد کنید"),
   body("email").isEmail().withMessage("ایمیل  وارد شده معتبر نیست"),
   body("password").notEmpty().withMessage("پسورد  خود را وارد کنید"),
@@ -44,10 +28,11 @@ router.post(
     .withMessage(" پسورد باید بیشتر از 6 حرف باشد"),
   validationError,
   async (req, res, next) => {
-    const { name, email, password, gender, stateCode, zipCode } = req.body;
+    const { name, family, email, password, gender, stateCode, zipCode } = req.body;
     let hashedPassword = await bcrypt.hash(password, 10);
     new sql.Request()
       .input("name", sql.NVarChar, name)
+      .input("family", sql.NVarChar, family)
       .input("email", sql.NVarChar, email)
       .input("password", sql.NVarChar, hashedPassword)
       .input("gender", sql.Int, gender)
@@ -124,11 +109,12 @@ router.get("/profile", CheckToken, (req, res, next) => {
 
 router.put("/profileUpdate", CheckToken, async (req, res, next) => {
   const Email = res.locals.container.email;
-  const { name, password, zipCode, stateCode, gender } = req.body;
+  const { name, password, family, zipCode, stateCode, gender } = req.body;
   let hashedPassword = await bcrypt.hash(password, 10);
   new sql.Request()
     .input("email", sql.NVarChar, Email)
     .input("name", sql.NVarChar, name)
+    .input("family", sql.NVarChar, family)
     .input("password", sql.NVarChar, hashedPassword)
     .input("gender", sql.Int, gender)
     .input("stateCode", sql.Int, stateCode)
