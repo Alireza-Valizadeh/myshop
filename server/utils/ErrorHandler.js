@@ -37,12 +37,13 @@ function sqlError(error) {
 }
 
 class BaseError {
-  constructor(title, httpCode, errors, description, isOperational) {
+  constructor(title, httpCode, errors, description, isOperational, isSuccess) {
     this.title = title;
     this.httpCode = httpCode;
     this.errors = errors;
     this.description = description;
     this.isOperational = isOperational;
+    this.isSuccess = isSuccess;
   }
 }
 class ErrorBuilder {
@@ -50,6 +51,7 @@ class ErrorBuilder {
   httpCode = 500;
   description = "An error occured";
   isOperational = false;
+  isSuccess= false;
   constructor(title) {
     this.title = title;
   }
@@ -75,7 +77,8 @@ class ErrorBuilder {
       this.httpCode,
       this.errors,
       this.description,
-      this.isOperational
+      this.isOperational,
+      this.isSuccess
     );
   }
   response(res) {
@@ -87,7 +90,8 @@ class ErrorBuilder {
           this.httpCode,
           this.errors,
           this.description,
-          this.isOperational
+          this.isOperational,
+          this.isSuccess
         )
       );
   }

@@ -8,7 +8,7 @@ router.get("/states", (req, res) => {
       console.log(err);
       return res.status(500).send(sqlError(err));
     }
-    res.status(200).send(result.recordset);
+    res.status(200).send({resultData: result.recordset, isSuccess: true});
   });
 });
 
@@ -18,7 +18,7 @@ router.get("/genders", (req, res) => {
       console.log(err);
       return res.status(500).send(sqlError(err));
     }
-    res.status(200).send(result.recordset);
+    res.status(200).send({resultData: result.recordset, isSuccess: true});
   });
 });
 

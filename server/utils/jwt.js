@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+
 const secretKey =
   "124ymwsdymwihdsymw41235ymw1sd511ymwsd231as2d11asdljashdnojh12351asda5sd451asdij";
 const {ErrorBuilder} = require("./ErrorHandler")
@@ -25,8 +26,8 @@ function CreateToken(inp) {
 function CheckToken(req, res, next) {
   const cookies = req?.cookies;
   const loginCookie = cookies?.loginCookie;
+  console.log(loginCookie)
   if (loginCookie == undefined) {
-    console.log("احراز هویت با خطا مواجه شد");
     return new ErrorBuilder("احراز هویت با خطا مواجه شد")
       .setHttpCode(403)
       .setDesc("برای دسترسی، ابتدا وارد حساب کاربری خود شوید")
@@ -47,7 +48,11 @@ function CheckToken(req, res, next) {
   jwt.verify(token, secretKey, (error, decode) => {
     if (error) {
       console.log("احراز هویت با خطا مواجه شد");
-      return res.status(403).send(error);
+      return new ErrorBuilder("احراز هویت با خطا مواجه شد")
+      .setHttpCode(403)
+      .setDesc("برای دسترسی، ابتدا وارد حساب کاربری خود شوید")
+      .setIO(false)
+      .response(res)
     }
     res.locals.container = decode;
     next();

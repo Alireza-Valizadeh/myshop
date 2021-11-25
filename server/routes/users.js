@@ -1,6 +1,7 @@
 const express = require("express");
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
+
 const {
   sqlError,
   validationError,
@@ -28,7 +29,8 @@ router.post(
     .withMessage(" پسورد باید بیشتر از 6 حرف باشد"),
   validationError,
   async (req, res, next) => {
-    const { name, family, email, password, gender, stateCode, zipCode } = req.body;
+    const { name, family, email, password, gender, stateCode, zipCode } =
+      req.body;
     let hashedPassword = await bcrypt.hash(password, 10);
     new sql.Request()
       .input("name", sql.NVarChar, name)
@@ -51,7 +53,9 @@ router.post(
             .response(res);
           return;
         }
-        res.status(201).send(result.recordset[0]);
+        res
+          .status(201)
+          .send({ resultData: result.recordset[0], isSuccess: true });
       });
   }
 );
@@ -89,7 +93,7 @@ router.post(
           tokenCookie.cookieValue,
           tokenCookie.cookieOptions
         );
-        res.status(200).send("OK");
+        res.status(200).send({ resultData: [], isSuccess: true });
       });
   }
 );
@@ -103,7 +107,7 @@ router.get("/profile", CheckToken, (req, res, next) => {
         console.log(err);
         return res.status(500).send(sqlError(err));
       }
-      res.status(200).send(result.recordset[0]);
+      res.status(200).send({resultData: result.recordset[0], isSuccess: true});
     });
 });
 
@@ -124,7 +128,9 @@ router.put("/profileUpdate", CheckToken, async (req, res, next) => {
         console.log(err);
         return res.status(500).send(sqlError(err));
       }
-      res.status(200).send(result.recordset[0]);
+      res
+        .status(200)
+        .send({ resultData: result.recordset[0], isSuccess: true });
     });
 });
 
